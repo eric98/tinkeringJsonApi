@@ -8,6 +8,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ApiArticleController extends TestCase
 {
+    use RefreshDatabase;
+
     /**
      * A basic test example.
      *
@@ -28,11 +30,13 @@ class ApiArticleController extends TestCase
     public function testShowArticleViaApi()
     {
         $article = factory(Article::class)->create();
-        $response = $this->json('GET','/api/article'.$article->id);
+        $response = $this->json('GET','/api/articles/'.$article->id);
 
         $response->assertSuccessful();
-
-        $response->assertJsonStructure([
+        $response->assertJsonStructure([[
+            'id','title','description','created_at','updated_at'
+        ]]);
+        $response->assertJson([
             'id' => $article->id,
             'title'=> $article->title,
             'description' => $article->description,
